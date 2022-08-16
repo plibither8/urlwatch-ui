@@ -1,10 +1,9 @@
-import type { RequestHandler } from "@sveltejs/kit";
+import { json } from "$lib/utils";
+import type { RequestHandler } from "./$types";
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-export interface Config {
-  urlwatchPath: string;
-}
+export type UrlwatchPath = keyof Config["urlwatch"];
 
 export interface ConfigResponse {
   config: Config | null;
@@ -14,11 +13,15 @@ export interface ConfigResponse {
 const CONFIG_FILEPATH =
   process.env.CONFIG_FILEPATH ?? `${process.cwd()}/data/config.json`;
 
-const DEFAULT_CONFIG = {
-  urlwatchPath: null,
+const DEFAULT_CONFIG: Config = {
+  urlwatch: {
+    installationPath: null,
+    jobsPath: null,
+    configPath: null,
+  },
 };
 
-const getConfig = async (): Promise<Config> => {
+export const getConfig = async (): Promise<Config> => {
   await access(CONFIG_FILEPATH);
   const configFile = await readFile(CONFIG_FILEPATH, "utf8");
   return JSON.parse(configFile) as Config;
@@ -41,59 +44,47 @@ const updateConfig = async (config: Partial<Config>): Promise<Config> => {
   return newConfig;
 };
 
-export const GET: RequestHandler<
-  Record<string, string>,
-  ConfigResponse
-> = async (...args) => {
+export const GET: RequestHandler = async (...args) => {
   try {
     const config = await getConfig();
-    return {
-      status: 200,
-      body: { config },
-    };
+    return json({ config });
   } catch (err: any) {
     if (err.code === "ENOENT") {
       try {
         await createConfig();
         return GET(...args);
       } catch (err) {
-        return {
-          status: 500,
-          body: {
+        return json(
+          {
             config: null,
             error: `Could not create app config file at ${CONFIG_FILEPATH}. Please create it manually: ${err}`,
           },
-        };
+          { status: 500 }
+        );
       }
     }
-    return {
-      status: 500,
-      body: {
+    return json(
+      {
         config: null,
         error: `Error accessing config: ${err}`,
       },
-    };
+      { status: 500 }
+    );
   }
 };
 
-export const PATCH: RequestHandler<
-  Record<string, string>,
-  ConfigResponse
-> = async ({ request }) => {
+export const PATCH: RequestHandler = async ({ request }) => {
   const patch = (await request.json()) as Partial<Config>;
   try {
     const config = await updateConfig(patch);
-    return {
-      status: 200,
-      body: { config },
-    };
+    return json({ config });
   } catch (err: any) {
-    return {
-      status: 500,
-      body: {
+    return json(
+      {
         config: null,
         error: `Error updating config: ${err}`,
       },
-    };
+      { status: 500 }
+    );
   }
 };

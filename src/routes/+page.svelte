@@ -1,10 +1,12 @@
 <script lang="ts">
+  import { api } from "$lib/api";
+
+  import JobCard from "$lib/components/Job.svelte";
+  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
+  import Nav from "$lib/components/Nav.svelte";
   import SetConfig from "$lib/components/SetConfig.svelte";
   import { config, jobs } from "$lib/stores";
-  import Nav from "$lib/components/Nav.svelte";
   import { onMount } from "svelte";
-  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
-  import Job from "$lib/components/Job.svelte";
 
   const requiresConfig = Object.values($config.urlwatch).some(
     (value) => !value
@@ -14,13 +16,13 @@
 
   const fetchJobs = async () => {
     loadingJobs = true;
-    const res = await fetch("/api/jobs");
-    $jobs = (await res.json()) as Job[];
+    const { data } = await api<Job[]>("jobs");
+    if (data) $jobs = data;
     loadingJobs = false;
   };
 
   onMount(() => {
-    fetchJobs();
+    !requiresConfig && fetchJobs();
   });
 </script>
 
@@ -28,9 +30,9 @@
   <Nav />
 
   <main class="px-3 py-5 sm:px-0">
-    {#if Object.values($config.urlwatch).some((value) => !value)}
-      <SetConfig />
-    {/if}
+    <!-- {#if requiresConfig} -->
+    <SetConfig />
+    <!-- {/if} -->
 
     {#if loadingJobs}
       <div
@@ -47,7 +49,7 @@
           <h2 class="text-2xl font-bold text-slate-900">Jobs</h2>
         </header>
         {#each $jobs as job, id}
-          <Job {job} id={id + 1} />
+          <JobCard {job} id={id + 1} />
         {/each}
       </section>
     {/if}

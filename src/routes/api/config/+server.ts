@@ -1,7 +1,8 @@
-import { json } from "$lib/utils";
+import { respond, respondWith } from "$lib/api";
 import type { RequestHandler } from "./$types";
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { messages } from "$lib/api/messages";
 
 export type UrlwatchPath = keyof Config["urlwatch"];
 
@@ -47,29 +48,24 @@ const updateConfig = async (config: Partial<Config>): Promise<Config> => {
 export const GET: RequestHandler = async (...args) => {
   try {
     const config = await getConfig();
-    return json({ config });
+    return respondWith("CONFIG_FETCH_200", { data: config });
   } catch (err: any) {
     if (err.code === "ENOENT") {
       try {
         await createConfig();
         return GET(...args);
       } catch (err) {
-        return json(
-          {
-            config: null,
-            error: `Could not create app config file at ${CONFIG_FILEPATH}. Please create it manually: ${err}`,
+        return respondWith("CONFIG_CREATE_500", {
+          details: {
+            configPath: CONFIG_FILEPATH,
+            error: err,
           },
-          { status: 500 }
-        );
+        });
       }
     }
-    return json(
-      {
-        config: null,
-        error: `Error accessing config: ${err}`,
-      },
-      { status: 500 }
-    );
+    return respondWith("CONFIG_ACCESS_500", {
+      details: { error: err },
+    });
   }
 };
 
@@ -77,14 +73,10 @@ export const PATCH: RequestHandler = async ({ request }) => {
   const patch = (await request.json()) as Partial<Config>;
   try {
     const config = await updateConfig(patch);
-    return json({ config });
-  } catch (err: any) {
-    return json(
-      {
-        config: null,
-        error: `Error updating config: ${err}`,
-      },
-      { status: 500 }
-    );
+    return respondWith("CONFIG_UPDATE_200", { data: config });
+  } catch (err) {
+    return respondWith("CONFIG_UPDATE_500", {
+      details: { error: err },
+    });
   }
 };

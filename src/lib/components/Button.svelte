@@ -2,29 +2,42 @@
   import LoadingSpinner from "./LoadingSpinner.svelte";
 
   export let onClick: ((...args: any[]) => any) | undefined = undefined;
+  export let style: "primary" | "secondary" | "danger" | "success" | "warning" =
+    "primary";
+  export let loading = false;
 
-  let loading = false;
   const wrappedOnClick = async () => {
     if (onClick) {
       loading = true;
-      await onClick();
+      try {
+        await onClick();
+      } catch {}
       loading = false;
     }
   };
 </script>
 
 <button
+  on:click={wrappedOnClick}
+  disabled={loading}
   {...$$props}
-  on:click={async () => await wrappedOnClick()}
   class="
-    inline-flex gap-2 items-center px-4 py-2 font-semibold leading-6 text-sm
-    rounded text-white bg-slate-600 hover:bg-slate-500
+    flex items-center gap-2 px-2 py-1 text-sm font-medium rounded-md
+    {style === 'primary'
+    ? 'text-slate-50 bg-slate-700 border border-slate-900 hover:bg-slate-600'
+    : style === 'secondary'
+    ? 'text-slate-900 bg-slate-100 border border-slate-200 hover:bg-slate-200'
+    : style === 'danger'
+    ? 'text-red-900 bg-red-100 border border-red-200 rounded-md hover:bg-red-200'
+    : style === 'success'
+    ? 'text-lime-900 bg-lime-100 border border-lime-200 rounded-md hover:bg-lime-200'
+    : style === 'warning' &&
+      'text-amber-900 bg-amber-100 border border-amber-200 rounded-md hover:bg-amber-200'}
     {$$props.class ?? ''} {loading && 'cursor-not-allowed'}"
 >
   {#if loading}
     <LoadingSpinner />
-  {/if}
-  <span>
+  {:else}
     <slot />
-  </span>
+  {/if}
 </button>

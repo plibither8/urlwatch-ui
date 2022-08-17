@@ -1,6 +1,17 @@
 <script lang="ts">
+  import { api } from "$lib/api";
+
+  import toast from "svelte-french-toast";
   import { Icon, ExternalLink, Play, Trash, Pencil } from "svelte-hero-icons";
   import Button from "./Button.svelte";
+
+  const run = async () => {
+    const { ok, message } = await api(`jobs/${id}/run`, { method: "POST" });
+    if (!ok) {
+      toast.error(message);
+      throw new Error(message);
+    }
+  };
 
   export let job: Job;
   export let id: number;
@@ -52,23 +63,25 @@
     {/if}
   </div>
   <div class="flex gap-4">
-    <button
-      class="flex items-center gap-2 px-2 py-1 text-sm font-medium text-red-900 bg-red-100 border border-red-200 rounded-md hover:bg-red-200"
-    >
+    <Button style="danger">
       <Icon src={Trash} class="w-4 h-4 fill-red-600" solid />
       Delete
-    </button>
-    <button
-      class="flex items-center gap-2 px-2 py-1 text-sm font-medium border rounded-md text-amber-900 border-amber-200 bg-amber-100 hover:bg-amber-200"
-    >
+    </Button>
+    <Button style="warning">
       <Icon src={Pencil} class="w-4 h-4 fill-amber-600" solid />
       Edit
-    </button>
-    <button
-      class="flex items-center gap-2 px-2 py-1 text-sm font-medium border rounded-md text-lime-900 border-lime-200 bg-lime-100 hover:bg-lime-200"
+    </Button>
+    <Button
+      style="success"
+      onClick={() =>
+        toast.promise(run(), {
+          loading: "Running job...",
+          success: "Job successfully run",
+          error: "Error while running job",
+        })}
     >
       <Icon src={Play} class="w-4 h-4 fill-lime-600" solid />
       Run
-    </button>
+    </Button>
   </div>
 </article>

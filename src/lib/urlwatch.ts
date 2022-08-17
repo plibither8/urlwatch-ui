@@ -3,17 +3,18 @@ import { execSync } from "node:child_process";
 import { writeFile } from "node:fs/promises";
 import { getConfig } from "../routes/api/config/+server";
 import { readFile } from "node:fs/promises";
+import { respondWith } from "./api";
 
 export const runUrlwatchCommand = async (
   subcommand?: string
 ): Promise<string | null> => {
   const config = await getConfig();
+  const command = `${config.urlwatch.installationPath} ${
+    subcommand ?? ""
+  }`.trim();
   try {
-    const result = execSync(
-      `${config.urlwatch.installationPath} ${subcommand ?? ""}`.trim(),
-      { encoding: "utf8" }
-    );
-    return result.toString();
+    const result = execSync(command, { encoding: "utf8" });
+    return result;
   } catch {
     return null;
   }
@@ -21,13 +22,13 @@ export const runUrlwatchCommand = async (
 
 export const isValidJobId = async (
   suppliedId: string
-): Promise<[number, null] | [null, Response]> => {
+): Promise<{ response: Response } | { id: number }> => {
   const id = Number(suppliedId);
-  if (isNaN(id)) return [null, new Response("Invalid job id", { status: 400 })];
+  if (isNaN(id)) return { response: respondWith("JOB_ID_INVALID_400") };
   const jobs = await getJobs();
   if (!jobs || id > jobs.length)
-    return [null, new Response("Job not found", { status: 404 })];
-  return [id, null];
+    return { response: respondWith("JOB_ID_NOT_FOUND_404") };
+  return { id };
 };
 
 export const getJobs = async (): Promise<Job[] | null> => {
@@ -37,7 +38,7 @@ export const getJobs = async (): Promise<Job[] | null> => {
       const jobsFile = await readFile(config.urlwatch.jobsPath, "utf8");
       const jobs = yaml.loadAll(jobsFile) as Job[];
       return jobs;
-    } catch {
+    } catch (err) {
       return null;
     }
   }

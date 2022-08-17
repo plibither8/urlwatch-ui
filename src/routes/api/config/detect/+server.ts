@@ -1,4 +1,4 @@
-import { json } from "$lib/utils";
+import { respondWith } from "$lib/api";
 import { execSync } from "node:child_process";
 import type { UrlwatchPath } from "../+server";
 import type { RequestHandler } from "./$types";
@@ -21,7 +21,7 @@ const commands: Record<UrlwatchPath, Command> = {
     command: `EDITOR=echo \`${WHICH_COMMAND}\` --edit-config`,
     extractPath: (output) => output.split("Saving edit changes in")[1]?.trim(),
   },
-  urlsPath: {
+  jobsPath: {
     command: `EDITOR=echo \`${WHICH_COMMAND}\` --edit`,
     extractPath: (output) => output.split("Saving edit changes in")[1]?.trim(),
   },
@@ -44,5 +44,5 @@ export const GET: RequestHandler = async () => {
     },
     {}
   );
-  return json({ paths });
+  return respondWith("CONFIG_PATHS_DETECT_200", { data: paths });
 };

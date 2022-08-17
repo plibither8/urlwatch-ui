@@ -1,10 +1,11 @@
 import { getJobs, setJobs } from "$lib/urlwatch";
-import { json } from "$lib/utils";
+import { respondWith } from "$lib/api";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async () => {
   const jobs = await getJobs();
-  return json(jobs ?? [], { status: jobs ? 200 : 500 });
+  if (jobs) return respondWith("JOBS_FETCH_200", { data: jobs });
+  return respondWith("JOBS_FETCH_500");
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -12,6 +13,6 @@ export const POST: RequestHandler = async ({ request }) => {
   if (!jobs) return new Response("Jobs not found", { status: 500 });
   const job = (await request.json()) as Job;
   if (await setJobs([...jobs, job]))
-    return new Response("Job created", { status: 200 });
-  return new Response("Job not created", { status: 500 });
+    return respondWith("JOB_CREATE_200", { data: job });
+  return respondWith("JOB_CREATE_500");
 };

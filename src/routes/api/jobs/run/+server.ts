@@ -1,8 +1,9 @@
+import { respondWith } from "$lib/api";
 import { runUrlwatchCommand } from "$lib/urlwatch";
 import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async () => {
   const result = await runUrlwatchCommand();
-  if (result) return new Response("Jobs run successfully", { status: 200 });
-  return new Response("Jobs not run successfully", { status: 500 });
+  if (result) return respondWith("JOB_RUN_200", { data: result });
+  return respondWith("JOB_RUN_500");
 };

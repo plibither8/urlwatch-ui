@@ -7,6 +7,7 @@
     UrlwatchPath,
   } from "../../routes/api/config/+server";
   import type { DetectedPaths } from "../../routes/api/config/detect/+server";
+  import { api } from "$lib/api";
 
   interface ConfigurablePath {
     key: UrlwatchPath;
@@ -35,52 +36,46 @@
   ];
 
   const detectPath = async () => {
-    const res = await fetch("/api/config/detect");
-    const { paths } = (await res.json()) as { paths: DetectedPaths };
+    const { data, message } = await api<DetectedPaths>("config/detect");
+    if (!data) {
+      toast.error(message);
+      throw new Error(message);
+    }
     configurablePaths.forEach(({ key }) => {
-      if (paths[key]) {
-        bufferConfig.urlwatch[key] = paths[key];
+      if (data[key]) {
+        bufferConfig.urlwatch[key] = data[key];
       }
     });
   };
 
+  let loading = false;
   const updateConfig = async () => {
-    try {
-      const res = await fetch("/api/config", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bufferConfig),
-      });
-      const data = (await res.json()) as ConfigResponse;
-      if (data.config) $config = data.config;
-    } catch (err) {}
+    loading = true;
+    const { ok, data, message } = await api<ConfigResponse>("config", {
+      method: "PATCH",
+      body: bufferConfig,
+    });
+    if (!ok) {
+      toast.error(message);
+      loading = false;
+      throw new Error(message);
+    }
+    if (data?.config) $config = data.config;
+    loading = false;
   };
 </script>
 
-<section
-  class="p-5 space-y-4 leading-normal border rounded border-slate-100 bg-slate-50"
->
+<section class="p-5 space-y-4 border rounded border-slate-100 bg-slate-50">
   <div class="space-y-2">
-    <h2 class="font-bold text-slate-900">
+    <h2 class="text-lg font-bold text-slate-900">
       Configure your <code>urlwatch</code> installation
     </h2>
-    <p class="text-sm text-slate-900">
+    <p class="text-sm leading-normal text-slate-900">
       Before continuing, please specify the path to your
       <code>urlwatch</code> installation/binary.
     </p>
   </div>
   <div class="space-y-4">
-    <button
-      class="text-sm font-medium underline"
-      on:click={() =>
-        toast.promise(detectPath(), {
-          loading: "Detecting path...",
-          success: "Path detected",
-          error: "Error detecting path",
-        })}
-    >
-      Automatically detect paths?
-    </button>
     <form
       class="flex flex-col gap-4"
       on:submit={(event) => {
@@ -107,8 +102,21 @@
           />
         </div>
       {/each}
-      <Button type="submit" class="self-end whitespace-nowrap">Configure</Button
-      >
+      <div class="flex justify-end gap-2">
+        <Button
+          type="button"
+          style="secondary"
+          onClick={() =>
+            toast.promise(detectPath(), {
+              loading: "Detecting path...",
+              success: "Path detected",
+              error: "Error detecting path",
+            })}
+        >
+          Automatically detect paths?
+        </Button>
+        <Button type="submit" {loading}>Configure</Button>
+      </div>
     </form>
   </div>
 </section>

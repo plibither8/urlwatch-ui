@@ -73,7 +73,7 @@ export const api = async <ResponseData = unknown>(
   console.error(
     `Error fetching ${endpoint}: ${data.key ? `${data.key}: ` : ""}${
       data.message
-    }\n\n${data.details ? data.details : ""}`.trim()
+    }\n\n${data.details ? JSON.stringify(data.details) : ""}`.trim()
   );
   throw new Error(data.message);
 };

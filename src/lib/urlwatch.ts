@@ -7,16 +7,20 @@ import { respondWith } from "./api";
 
 export const runUrlwatchCommand = async (
   subcommand?: string
-): Promise<string | null> => {
+): Promise<{ result: string } | { response: Response }> => {
   const config = await getConfig();
   const command = `${config.urlwatch.installationPath} ${
     subcommand ?? ""
   }`.trim();
   try {
     const result = execSync(command, { encoding: "utf8" });
-    return result;
-  } catch {
-    return null;
+    return { result };
+  } catch (error) {
+    return {
+      response: respondWith("JOB_RUN_500", {
+        details: String(error),
+      }),
+    };
   }
 };
 

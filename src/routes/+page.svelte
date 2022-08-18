@@ -30,9 +30,9 @@
   <Nav />
 
   <main class="px-3 py-5 sm:px-0">
-    <!-- {#if requiresConfig} -->
-    <SetConfig />
-    <!-- {/if} -->
+    {#if requiresConfig}
+      <SetConfig />
+    {/if}
 
     {#if loadingJobs}
       <div

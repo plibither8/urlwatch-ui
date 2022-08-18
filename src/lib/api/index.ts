@@ -1,9 +1,11 @@
+import { browser } from "$app/env";
+import toast from "svelte-french-toast";
 import { messages, type MESSAGE_KEYS } from "./messages";
 
 interface ApiResponseArgs<ResponseData = unknown> {
   message: string;
-  key?: MESSAGE_KEYS;
   data?: ResponseData;
+  key?: MESSAGE_KEYS;
   details?: any;
   status?: number;
 }
@@ -13,10 +15,15 @@ export interface ApiResponse<ResponseData = unknown>
   ok: boolean;
 }
 
-const API_BASE = "/api";
+export interface ApiResponseWithData<ResponseData = unknown>
+  extends ApiResponse<ResponseData> {
+  data: ResponseData;
+}
+
+const API_BASE_URL = "/api";
 
 export const respond = <ResponseData = unknown>(
-  { status = 200, ...rest }: ApiResponseArgs<ResponseData>,
+  { status = 200, data, ...rest }: ApiResponseArgs<ResponseData>,
   responseOptions?: ResponseInit
 ): Response =>
   new Response(
@@ -24,6 +31,7 @@ export const respond = <ResponseData = unknown>(
       {
         ok: status < 400,
         status,
+        data: data ?? {},
         ...rest,
       },
       null,
@@ -59,7 +67,7 @@ export const api = async <ResponseData = unknown>(
     input: RequestInfo,
     init?: RequestInit | undefined
   ) => Promise<Response> = fetch
-): Promise<ApiResponse<ResponseData>> => {
+): Promise<ApiResponseWithData<ResponseData>> => {
   if (options.method !== "GET" && options.body) {
     options.body = JSON.stringify(options.body);
     options.headers = {
@@ -67,13 +75,14 @@ export const api = async <ResponseData = unknown>(
       "Content-Type": "application/json",
     };
   }
-  const response = await fetcher(`${API_BASE}/${endpoint}`, options);
-  const data = (await response.json()) as ApiResponse<ResponseData>;
+  const response = await fetcher(`${API_BASE_URL}/${endpoint}`, options);
+  const data = (await response.json()) as ApiResponseWithData<ResponseData>;
   if (data.ok) return data;
   console.error(
     `Error fetching ${endpoint}: ${data.key ? `${data.key}: ` : ""}${
       data.message
     }\n\n${data.details ? JSON.stringify(data.details) : ""}`.trim()
   );
+  if (browser) toast.error(data.message);
   throw new Error(data.message);
 };

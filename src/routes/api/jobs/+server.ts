@@ -1,5 +1,5 @@
-import { getJobs, setJobs } from "$lib/urlwatch";
 import { respondWith } from "$lib/api";
+import { getJobs, setJobs } from "$lib/urlwatch";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async () => {

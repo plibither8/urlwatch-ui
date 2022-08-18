@@ -1,20 +1,20 @@
 <script lang="ts">
   import { api } from "$lib/api";
-
+  import { jobs } from "$lib/stores";
   import toast from "svelte-french-toast";
-  import { Icon, ExternalLink, Play, Trash, Pencil } from "svelte-hero-icons";
+  import { ExternalLink, Icon, Pencil, Play, Trash } from "svelte-hero-icons";
   import Button from "./Button.svelte";
-
-  const run = async () => {
-    const { ok, message } = await api(`jobs/${id}/run`, { method: "POST" });
-    if (!ok) {
-      toast.error(message);
-      throw new Error(message);
-    }
-  };
 
   export let job: Job;
   export let id: number;
+
+  const run = () => api(`jobs/${id}/run`, { method: "POST" });
+
+  const deleteJob = async () => {
+    await api(`jobs/${id}`, { method: "DELETE" });
+    $jobs.splice(id - 1, 1);
+    $jobs = $jobs;
+  };
 </script>
 
 <article
@@ -24,6 +24,7 @@
   <aside class="text-slate-400">
     <span>{id}</span>.
   </aside>
+
   <div class="flex-1 w-full">
     <h3
       class="flex items-center gap-2 font-medium inline-center text-slate-700"
@@ -48,8 +49,9 @@
       </span>
       <span>{job.name}</span>
     </h3>
+
     {#if "url" in job}
-      <p class="overflow-auto text-sm text-slate-500">
+      <p class="flex overflow-auto text-sm text-slate-500">
         <a
           href={job.url}
           target="_blank"
@@ -62,8 +64,17 @@
       </p>
     {/if}
   </div>
+
   <div class="flex gap-4">
-    <Button style="danger">
+    <Button
+      style="danger"
+      onClick={() =>
+        toast.promise(deleteJob(), {
+          loading: "Deleting job...",
+          success: "Job successfully deleted",
+          error: "Error while deleting job",
+        })}
+    >
       <Icon src={Trash} class="w-4 h-4 fill-red-600" solid />
       Delete
     </Button>

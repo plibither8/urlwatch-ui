@@ -1,13 +1,12 @@
 <script lang="ts">
-  import toast from "svelte-french-toast";
+  import { api } from "$lib/api";
   import Button from "$lib/components/Button.svelte";
   import { config } from "$lib/stores";
-  import type {
-    ConfigResponse,
-    UrlwatchPath,
-  } from "../../routes/api/config/+server";
+  import toast from "svelte-french-toast";
+  import type { UrlwatchPath } from "../../routes/api/config/+server";
   import type { DetectedPaths } from "../../routes/api/config/detect/+server";
-  import { api } from "$lib/api";
+
+  export let fetchJobs: () => Promise<void>;
 
   interface ConfigurablePath {
     key: UrlwatchPath;
@@ -36,11 +35,7 @@
   ];
 
   const detectPath = async () => {
-    const { data, message } = await api<DetectedPaths>("config/detect");
-    if (!data) {
-      toast.error(message);
-      throw new Error(message);
-    }
+    const { data } = await api<DetectedPaths>("config/detect");
     configurablePaths.forEach(({ key }) => {
       if (data[key]) {
         bufferConfig.urlwatch[key] = data[key];
@@ -51,17 +46,13 @@
   let loading = false;
   const updateConfig = async () => {
     loading = true;
-    const { ok, data, message } = await api<ConfigResponse>("config", {
+    const { data } = await api<Config>("config", {
       method: "PATCH",
       body: bufferConfig,
     });
-    if (!ok) {
-      toast.error(message);
-      loading = false;
-      throw new Error(message);
-    }
-    if (data?.config) $config = data.config;
+    $config = data;
     loading = false;
+    fetchJobs();
   };
 </script>
 

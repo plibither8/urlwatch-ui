@@ -1,6 +1,5 @@
 <script lang="ts">
   import { api } from "$lib/api";
-
   import JobCard from "$lib/components/Job.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import Nav from "$lib/components/Nav.svelte";
@@ -17,7 +16,7 @@
   const fetchJobs = async () => {
     loadingJobs = true;
     const { data } = await api<Job[]>("jobs");
-    if (data) $jobs = data;
+    $jobs = data;
     loadingJobs = false;
   };
 
@@ -29,9 +28,9 @@
 <div class="max-w-5xl mx-auto">
   <Nav />
 
-  <main class="px-3 py-5 sm:px-0">
+  <main class="px-3 py-5 md:px-0">
     {#if requiresConfig}
-      <SetConfig />
+      <SetConfig {fetchJobs} />
     {/if}
 
     {#if loadingJobs}

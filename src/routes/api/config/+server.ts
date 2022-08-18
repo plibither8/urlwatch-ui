@@ -1,15 +1,9 @@
-import { respond, respondWith } from "$lib/api";
-import type { RequestHandler } from "./$types";
+import { respondWith } from "$lib/api";
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { messages } from "$lib/api/messages";
+import type { RequestHandler } from "./$types";
 
 export type UrlwatchPath = keyof Config["urlwatch"];
-
-export interface ConfigResponse {
-  config: Config | null;
-  error?: string;
-}
 
 const CONFIG_FILEPATH =
   process.env.CONFIG_FILEPATH ?? `${process.cwd()}/data/config.json`;

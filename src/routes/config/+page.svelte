@@ -121,6 +121,10 @@
   });
 </script>
 
+<svelte:head>
+  <title>Config &middot; urlwatch UI</title>
+</svelte:head>
+
 <Page heading="Config" class="space-y-10">
   {#if urlwatchConfig.show}
     <section id="urlwatch-config" class="space-y-5">

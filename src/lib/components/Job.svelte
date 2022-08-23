@@ -87,9 +87,9 @@
         {#if "url" in job}
           URL
         {:else if "navigate" in job}
-          Shell
-        {:else}
           Browser
+        {:else}
+          Shell
         {/if}
       </span>
       <span>{job.name}</span>

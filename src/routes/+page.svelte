@@ -21,6 +21,10 @@
   });
 </script>
 
+<svelte:head>
+  <title>urlwatch UI</title>
+</svelte:head>
+
 <Page heading="Jobs" headerComponent={JobsHeader}>
   {#if loadingJobs}
     <div

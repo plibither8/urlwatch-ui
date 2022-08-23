@@ -1,5 +1,5 @@
 import yaml from "js-yaml";
-import { execSync } from "node:child_process";
+import { exec } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
 import { getConfig } from "../routes/api/config/ui/+server";
 import { respondWith } from "./api";
@@ -12,7 +12,12 @@ export const runUrlwatchCommand = async (
     subcommand ?? ""
   }`.trim();
   try {
-    const result = execSync(command, { encoding: "utf8" });
+    const result = await new Promise<string>((resolve, reject) => {
+      exec(command, { encoding: "utf8" }, (error, stdout, stderr) => {
+        if (error || stderr) return reject(error || stderr);
+        resolve(stdout);
+      });
+    });
     return { result };
   } catch (error) {
     return {

@@ -3,7 +3,7 @@ import { redirect } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
 
 export const load: LayoutLoad = async ({ fetch, routeId }) => {
-  const { data } = await api<Config>("config", undefined, fetch);
+  const { data } = await api<Config>("config/ui", undefined, fetch);
   const requiresConfig = Object.values(data.urlwatch).some((value) => !value);
   if (routeId !== "config" && requiresConfig) throw redirect(302, "/config");
   return { config: data };

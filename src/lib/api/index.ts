@@ -81,7 +81,7 @@ export const api = async <ResponseData = unknown>(
   console.error(
     `Error fetching ${endpoint}: ${data.key ? `${data.key}: ` : ""}${
       data.message
-    }\n\n${data.details ? JSON.stringify(data.details) : ""}`.trim()
+    }\n\n${data.details ? JSON.stringify(data.details, null, 2) : ""}`.trim()
   );
   if (browser) toast.error(data.message);
   throw new Error(data.message);

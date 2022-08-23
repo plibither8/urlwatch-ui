@@ -1,8 +1,8 @@
 <nav
-  class="sticky top-0 flex items-baseline justify-between px-3 py-2 bg-white border-b text-slate-500"
+  class="sticky top-0 z-10 flex items-baseline justify-between px-3 py-2 bg-white border-b text-slate-500"
 >
   <div class="flex items-baseline gap-5">
-    <a href="/">
+    <a href="/" sveltekit:reload>
       <h1 class="text-lg font-bold text-slate-800">
         urlwatch
         <span

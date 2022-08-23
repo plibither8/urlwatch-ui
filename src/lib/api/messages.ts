@@ -15,6 +15,13 @@ export const messages = satisfies<Record<string, string>>()({
   CONFIG_UPDATE_200: "Config updated successfully",
   CONFIG_UPDATE_500: "Job update failed",
 
+  URLWATCH_CONFIG_FETCH_200: "urlwatch config fetched successfully",
+  URLWATCH_CONFIG_FETCH_404: "urlwatch config path incorrect",
+  URLWATCH_CONFIG_FETCH_500: "urlwatch config fetch failed",
+
+  URLWATCH_CONFIG_UPDATE_200: "urlwatch config updated successfully",
+  URLWATCH_CONFIG_UPDATE_500: "urlwatch config update failed",
+
   JOB_FETCH_200: "Job fetched successfully",
   JOB_FETCH_500: "Job fetch failed",
 

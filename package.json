@@ -18,9 +18,12 @@
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
     "autoprefixer": "^10.4.7",
+    "commands": "link:@types/@codemirror/commands",
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-svelte3": "^4.0.0",
+    "language": "link:@types/@codemirror/language",
+    "legacy-modes": "link:@types/@codemirror/legacy-modes",
     "postcss": "^8.4.14",
     "postcss-load-config": "^4.0.1",
     "prettier": "^2.6.2",
@@ -32,10 +35,16 @@
     "tailwindcss": "^3.1.5",
     "tslib": "^2.3.1",
     "typescript": "^4.7.4",
+    "view": "link:@types/@codemirror/view",
     "vite": "^3.0.0"
   },
   "type": "module",
   "dependencies": {
+    "@codemirror/commands": "^6.1.0",
+    "@codemirror/language": "^6.2.1",
+    "@codemirror/legacy-modes": "^6.1.0",
+    "@codemirror/view": "^6.2.0",
+    "codemirror": "^6.0.1",
     "js-yaml": "^4.1.0",
     "svelte-french-toast": "^1.0.3"
   }

@@ -1,7 +1,7 @@
 import yaml from "js-yaml";
 import { execSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
-import { getConfig } from "../routes/api/config/+server";
+import { getConfig } from "../routes/api/config/ui/+server";
 import { respondWith } from "./api";
 
 export const runUrlwatchCommand = async (

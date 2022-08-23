@@ -6,7 +6,7 @@
   import type { UrlwatchPath } from "../../routes/api/config/+server";
   import type { DetectedPaths } from "../../routes/api/config/detect/+server";
 
-  export let fetchJobs: () => Promise<void>;
+  export let fetchJobs: (() => Promise<void>) | undefined = undefined;
 
   interface ConfigurablePath {
     key: UrlwatchPath;
@@ -52,7 +52,7 @@
     });
     $config = data;
     loading = false;
-    fetchJobs();
+    fetchJobs?.();
   };
 </script>
 
@@ -104,7 +104,7 @@
               error: "Error detecting path",
             })}
         >
-          Automatically detect paths?
+          Automatically detect paths
         </Button>
         <Button type="submit" {loading}>Configure</Button>
       </div>

@@ -2,24 +2,69 @@
   import { api } from "$lib/api";
   import { jobs } from "$lib/stores";
   import toast from "svelte-french-toast";
-  import { ExternalLink, Icon, Pencil, Play, Trash } from "svelte-hero-icons";
-  import Button from "./Button.svelte";
+  import {
+    ExternalLink,
+    Icon,
+    Pencil,
+    Play,
+    Trash,
+    type IconSource,
+  } from "svelte-hero-icons";
+  import Button, { type ButtonStyle } from "./Button.svelte";
 
   export let job: Job;
   export let id: number;
 
-  const run = () => api(`jobs/${id}/run`, { method: "POST" });
-
-  const deleteJob = async () => {
-    await api(`jobs/${id}`, { method: "DELETE" });
-    $jobs.splice(id - 1, 1);
-    $jobs = $jobs;
+  const actions = {
+    delete: async () => {
+      await api(`jobs/${id}`, { method: "DELETE" });
+      $jobs.splice(id - 1, 1);
+      $jobs = $jobs;
+    },
+    run: () => api(`jobs/${id}/run`, { method: "POST" }),
+    edit: () => {},
   };
+
+  const buttons: {
+    style: ButtonStyle;
+    icon: IconSource;
+    text: string;
+    onClick: (...args: any[]) => any;
+  }[] = [
+    {
+      text: "Delete",
+      style: "danger",
+      icon: Trash,
+      onClick: () =>
+        toast.promise(actions.delete(), {
+          loading: "Deleting job...",
+          success: "Job successfully deleted",
+          error: "Error while deleting job",
+        }),
+    },
+    {
+      text: "Edit",
+      style: "warning",
+      icon: Pencil,
+      onClick: () => actions.edit(),
+    },
+    {
+      text: "Run",
+      style: "success",
+      icon: Play,
+      onClick: () =>
+        toast.promise(actions.run(), {
+          loading: "Running job...",
+          success: "Job successfully run",
+          error: "Error while running job",
+        }),
+    },
+  ];
 </script>
 
 <article
   id="job-{id}"
-  class="flex flex-col flex-wrap gap-3 px-2 py-4 space-y-1 rounded-md md:px-5 md:gap-5 md:items-center md:flex-row hover:bg-slate-100"
+  class="flex flex-col flex-wrap gap-3 p-4 space-y-1 rounded-md shadow shadow-slate-200 md:py-4 md:px-5 md:gap-5 md:items-center md:flex-row hover:bg-slate-50"
 >
   <aside class="text-slate-400">
     <span>{id}</span>.
@@ -65,34 +110,12 @@
     {/if}
   </div>
 
-  <div class="flex gap-4">
-    <Button
-      style="danger"
-      onClick={() =>
-        toast.promise(deleteJob(), {
-          loading: "Deleting job...",
-          success: "Job successfully deleted",
-          error: "Error while deleting job",
-        })}
-    >
-      <Icon src={Trash} class="w-4 h-4 fill-red-600" solid />
-      Delete
-    </Button>
-    <Button style="warning">
-      <Icon src={Pencil} class="w-4 h-4 fill-amber-600" solid />
-      Edit
-    </Button>
-    <Button
-      style="success"
-      onClick={() =>
-        toast.promise(run(), {
-          loading: "Running job...",
-          success: "Job successfully run",
-          error: "Error while running job",
-        })}
-    >
-      <Icon src={Play} class="w-4 h-4 fill-lime-600" solid />
-      Run
-    </Button>
+  <div class="flex self-end gap-4 md:self-center">
+    {#each buttons as { style, icon, text, onClick }}
+      <Button {style} {onClick}>
+        <Icon src={icon} class="w-4 h-4 fill-inherit" solid />
+        {text}
+      </Button>
+    {/each}
   </div>
 </article>

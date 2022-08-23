@@ -7,5 +7,5 @@ export const POST: RequestHandler = async ({ params }) => {
   if ("response" in validity) return validity.response;
   const { id } = validity;
   const result = await runUrlwatchCommand(`${id}`);
-  return respondWith(result ? "JOB_RUN_200" : "JOB_RUN_500");
+  return respondWith(result ? "JOB_RUN_200" : "JOB_RUN_500", { data: result });
 };

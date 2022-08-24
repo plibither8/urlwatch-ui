@@ -1,9 +1,14 @@
 <script lang="ts">
   import { api } from "$lib/api";
-
-  import { jobs } from "$lib/stores";
+  import { jobs, isNewJobFormVisible } from "$lib/stores";
   import toast from "svelte-french-toast";
-  import { Icon, Play, PlusCircle } from "svelte-hero-icons";
+  import {
+    ArrowCircleRight,
+    ChevronRight,
+    Icon,
+    Play,
+    PlusCircle,
+  } from "svelte-hero-icons";
   import Button from "./Button.svelte";
 
   const run = () => api(`jobs/run`, { method: "POST" });
@@ -13,7 +18,18 @@
   <div class="pl-2 flex-1 flex justify-between items-center">
     <p class="text-sm text-slate-500">({$jobs?.length})</p>
     <aside class="flex gap-4">
-      <Button style="secondary" onClick={() => {}}>
+      <Button
+        style="secondary"
+        onClick={() => {
+          $isNewJobFormVisible = !$isNewJobFormVisible;
+        }}
+      >
+        <Icon
+          src={ChevronRight}
+          class="w-4 h-4 fill-inherit transition-transform
+          {$isNewJobFormVisible && 'rotate-90'}"
+          solid
+        />
         <Icon src={PlusCircle} class="w-4 h-4 fill-inherit" solid />
         New job
       </Button>

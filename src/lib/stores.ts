@@ -7,3 +7,5 @@ export const requiresConfig = derived([config], ([value], set) => {
 });
 
 export const jobs = writable<Job[]>();
+
+export const isNewJobFormVisible = writable<boolean>(false);

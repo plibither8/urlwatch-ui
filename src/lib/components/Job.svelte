@@ -60,7 +60,7 @@
 
 <article
   id="job-{id}"
-  class="flex flex-col gap-3 p-4 space-y-1 rounded-md shadow shadow-slate-200 md:py-4 md:px-5 md:gap-5 md:items-center md:flex-row hover:shadow-md transition-shadow"
+  class="flex flex-col gap-3 p-4 space-y-1 rounded-md shadow shadow-slate-200 md:px-5 md:gap-5 md:items-center md:flex-row hover:shadow-md transition-shadow"
 >
   <div class="flex-1 w-full">
     <h3
@@ -93,7 +93,7 @@
           href={job.url}
           target="_blank"
           rel="noopener norefferer"
-          class="flex items-center gap-1 hover:underline"
+          class="flex items-center gap-1 hover:underline focus:underline"
         >
           <span>{job.url}</span>
           <Icon src={ExternalLink} class="w-4 h-4" />

@@ -30,10 +30,10 @@
   disabled={loading}
   {...$$props}
   class="
-    flex outline items-center gap-2 px-2 py-1.5 text-sm font-medium rounded-md
-  transition duration-150 active:scale-90
+    flex outline items-center gap-2 px-2 py-1 text-sm font-medium rounded-md
+    transition duration-150 active:scale-90 focus:ring-2 focus:ring-offset-2 focus:ring-slate-600
     {style === 'primary'
-    ? 'text-slate-50 outline-slate-600 bg-slate-700 hover:bg-slate-600 fill-slate-100'
+    ? 'text-slate-50 outline-slate-700 bg-slate-600 hover:bg-slate-600 fill-slate-100'
     : style === 'secondary'
     ? 'text-slate-900 outline-slate-100 bg-slate-50 hover:bg-slate-100 fill-slate-600'
     : style === 'danger'

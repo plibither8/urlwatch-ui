@@ -1,38 +1,44 @@
-# create-svelte
+# `urlwatch` UI
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+> 🌐 An intuitive and simple GUI for managing [`urlwatch`](https://github.com/thp/urlwatch).
 
-## Creating a project
+**`urlwatch` UI** is a web-based UI for managing jobs on [`urlwatch`](https://github.com/thp/urlwatch).
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Installation
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+### Prerequisites
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+- Node.js v16+
+- `pnpm`/`npm`/`yarn` package manager
 
-## Developing
+I use `pnpm` as my package manager, although `npm` or `yarn` should work too.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### Build
 
-```bash
-npm run dev
+1. Clone this repo and enter the repo directory.
+2. `pnpm install` to install the dependencies.
+3. `pnpm build` to build the production files.
+4. `pnpm start` to start the server.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+> You can specifiy the server port through the `PORT` environment variable.
+>
+> Example: `PORT=3000 pnpm start`
 
-## Building
+### Development
 
-To create a production version of your app:
+This web app is build using [SvelteKit](https://kit.svelte.dev/), TypeScript and Tailwind.
 
-```bash
-npm run build
-```
+`pnpm dev` to start the dev server. The rest is pretty simple.
 
-You can preview the production build with `npm run preview`.
+## TODO
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- [ ] Dockerize app installation and setup
+- [ ] Add all job configurations (filters, etc.) when adding a new job, and editing and existing job.
+
+## License
+
+[MIT](LICENSE)
+
+---
+
+Additionally, many thanks to [Thomas Perl](https://github.com/thp) for creating `urlwatch`. `urlwatch` is © 2022 Thomas Perl.

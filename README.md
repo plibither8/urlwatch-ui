@@ -5,7 +5,7 @@
 **`urlwatch` UI** is a web-based UI for managing jobs on [`urlwatch`](https://github.com/thp/urlwatch), with easy configuration and quick to get started.
 
 <p align="center">
-  <img height="400" src="assets/demo.gif">
+  <img src="assets/demo.gif">
 </p>
 
 ## Installation

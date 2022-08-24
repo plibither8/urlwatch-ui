@@ -28,11 +28,9 @@
   const buttons: {
     style: ButtonStyle;
     icon: IconSource;
-    text: string;
     onClick: (...args: any[]) => any;
   }[] = [
     {
-      text: "Delete",
       style: "danger",
       icon: Trash,
       onClick: () =>
@@ -43,13 +41,11 @@
         }),
     },
     {
-      text: "Edit",
       style: "warning",
       icon: Pencil,
       onClick: () => actions.edit(),
     },
     {
-      text: "Run",
       style: "success",
       icon: Play,
       onClick: () =>
@@ -64,12 +60,8 @@
 
 <article
   id="job-{id}"
-  class="flex flex-col flex-wrap gap-3 p-4 space-y-1 rounded-md shadow shadow-slate-200 md:py-4 md:px-5 md:gap-5 md:items-center md:flex-row hover:bg-slate-50"
+  class="flex flex-col gap-3 p-4 space-y-1 rounded-md shadow shadow-slate-200 md:py-4 md:px-5 md:gap-5 md:items-center md:flex-row hover:shadow-md transition-shadow"
 >
-  <aside class="text-slate-400">
-    <span>{id}</span>.
-  </aside>
-
   <div class="flex-1 w-full">
     <h3
       class="flex items-center gap-2 font-medium inline-center text-slate-700"
@@ -111,10 +103,9 @@
   </div>
 
   <div class="flex self-end gap-4 md:self-center">
-    {#each buttons as { style, icon, text, onClick }}
+    {#each buttons as { style, icon, onClick }}
       <Button {style} {onClick}>
         <Icon src={icon} class="w-4 h-4 fill-inherit" solid />
-        {text}
       </Button>
     {/each}
   </div>

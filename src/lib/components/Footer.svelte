@@ -2,7 +2,7 @@
   import { ExternalLink, Icon } from "svelte-hero-icons";
 </script>
 
-<footer class="text-xs text-slate-600 p-3 border-t gap-3 space-y-1">
+<footer class="text-xs text-slate-600 px-3 py-5 border-t gap-3 space-y-1">
   <p>
     <a
       href="https://github.com/plibither8/urlwatch-ui"

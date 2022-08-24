@@ -1,8 +1,17 @@
 <script lang="ts" context="module">
-  export interface SimpleJob {
+  export type SimpleJob = {
     name: string;
-    url: string;
-  }
+  } & (
+    | {
+        url: string;
+      }
+    | {
+        command: string;
+      }
+    | {
+        navigate: string;
+      }
+  );
 </script>
 
 <script lang="ts">
@@ -10,6 +19,7 @@
 
   let loading = false;
 
+  export let submitButtonText: string = "Submit";
   export let onSubmit: (job: SimpleJob) => any;
   export let onCancel: (() => any) | undefined = undefined;
   export let job: SimpleJob = {
@@ -21,10 +31,8 @@
 <form
   class="flex flex-col gap-2"
   on:submit={async (event) => {
-    console.log("hello");
     event.preventDefault();
-    if (job.name && job.url) {
-      console.log("hello");
+    if (job.name && ["url", "command", "navigate"].some((key) => key in job)) {
       loading = true;
       await onSubmit(job);
       loading = false;
@@ -43,18 +51,20 @@
       bind:value={job.name}
     />
   </div>
-  <div class="space-y-1">
-    <label for="input_url" class="text-xs text-slate-500">URL</label>
-    <input
-      required
-      id="input_url"
-      aria-label="URL"
-      type="text"
-      class="w-full text-sm px-3 py-2 font-mono border border-gray-300 rounded"
-      placeholder="https://example.com"
-      bind:value={job.url}
-    />
-  </div>
+  {#if "url" in job}
+    <div class="space-y-1">
+      <label for="input_url" class="text-xs text-slate-500">URL</label>
+      <input
+        required
+        id="input_url"
+        aria-label="URL"
+        type="url"
+        class="w-full text-sm px-3 py-2 font-mono border border-gray-300 rounded"
+        placeholder="https://example.com"
+        bind:value={job.url}
+      />
+    </div>
+  {/if}
   <div class="flex items-center justify-end gap-4 mt-2">
     {#if onCancel}
       <Button type="button" style="secondary" onClick={onCancel}>Cancel</Button>
@@ -63,9 +73,9 @@
       style="primary"
       type="submit"
       {loading}
-      disabled={!job.name || !job.url}
+      disabled={!["url", "command", "navigate"].some((key) => key in job)}
     >
-      Submit
+      {submitButtonText}
     </Button>
   </div>
 </form>

@@ -59,6 +59,7 @@
       >
         <h3 class="text-slate-700 font-semibold">Create new job</h3>
         <JobForm
+          submitButtonText="Create"
           onCancel={() => {
             $isNewJobFormVisible = false;
           }}

@@ -4,7 +4,7 @@
   import Button from "$lib/components/Button.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import Page from "$lib/components/Page.svelte";
-  import { config } from "$lib/stores";
+  import { config, requiresConfig } from "$lib/stores";
   import { indentWithTab } from "@codemirror/commands";
   import { StreamLanguage } from "@codemirror/language";
   import { yaml } from "@codemirror/legacy-modes/mode/yaml";
@@ -75,9 +75,7 @@
     loading: boolean;
     error: boolean;
   } = {
-    show: Boolean(
-      $config?.urlwatch.configPath && $config?.urlwatch.installationPath
-    ),
+    show: !$requiresConfig,
     config: null,
     loading: false,
     error: false,

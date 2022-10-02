@@ -111,9 +111,13 @@
             href={job.url}
             target="_blank"
             rel="noopener norefferer"
-            class="flex items-center gap-1 hover:underline focus:underline"
+            class="break-all flex items-center gap-1 hover:underline focus:underline"
           >
-            <span>{job.url}</span>
+            <span class=""
+              >{job.url.length > 100
+                ? `${job.url.substring(0, 97)}...`
+                : job.url}</span
+            >
             <Icon src={ExternalLink} class="w-4 h-4" />
           </a>
         </p>

@@ -1,4 +1,4 @@
-import { browser } from "$app/env";
+import { browser } from "$app/environment";
 import toast from "svelte-french-toast";
 import { messages, type MESSAGE_KEYS } from "./messages";
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import Footer from "$lib/components/Footer.svelte";
@@ -12,7 +13,7 @@
 
   $config = data.config;
 
-  $: if ($requiresConfig && $page.routeId !== "config") {
+  $: if (browser && $requiresConfig && $page.route.id !== "/config") {
     goto("/config");
   }
 </script>

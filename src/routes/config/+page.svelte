@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import { api } from "$lib/api";
   import Button from "$lib/components/Button.svelte";
@@ -66,7 +67,7 @@
     });
     $config = data;
     urlwatchUiLoading = false;
-    !urlwatchConfig.show && goto("/");
+    browser && !urlwatchConfig.show && goto("/");
   };
 
   const urlwatchConfig: {
